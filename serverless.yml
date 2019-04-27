@@ -1,0 +1,35 @@
+service: hello-world-serverless-lambda
+
+plugins:
+  - serverless-offline
+  - serverless-webpack
+
+custom:
+  webpackIncludeModules: true
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  region: us-west-2
+
+iamRoleStatements:
+  - Effect: 'Allow'
+    Action:
+      - 'lambda:InvokeFunction'
+    Resource: "*"
+
+functions:
+  app:
+    warmup: false
+    handler: src/index.handler
+    events:
+      - http: ANY /
+      - http: 'ANY {proxy+}'
+  hello:
+    handler: src/index.handler
+    events:
+      - http: 'GET /hello/'
+  user:
+    handler: src/index.handler
+    events:
+      - http: 'GET /user/'
